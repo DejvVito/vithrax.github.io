@@ -1,10 +1,110 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
     <head>
-        <title>Hello!</title>
+        <title>Test Page</title>
+        <style>
+            html {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .test {
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+            #colorbox {
+                height: 300px;
+                background-color: aqua;
+            }
+
+            #result {
+                font-weight: bold;
+                font-size: 13px;
+            }
+        </style>
+        <script>
+            var total = 0;
+            var good = 0;
+
+            function randomColor() {
+                const digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', "F"]
+            
+                var str = "#"
+            
+                for (let i = 0; i < 6; i++) {
+                    var n = Math.floor(Math.random()*digits.length)
+                    const digit = digits[n]
+                    str = str + digit
+                }
+            
+                return str
+            }
+
+            // function from stackoverflow
+            const rgba2hex = (rgba) => `#${rgba.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/).slice(1).map((n, i) => (i === 3 ? Math.round(parseFloat(n) * 255) : parseFloat(n)).         toString(16).padStart(2, '0').replace('NaN', '')).join('')}`
+
+            function answer(hash) {
+                const answer = rgba2hex(document.querySelector('#colorbox').style.backgroundColor).toUpperCase()
+                const resultBox = document.querySelector('#result')
+                const scoreBox = document.querySelector('h2')
+                total++;
+            
+                if (answer === hash) {
+                    resultBox.innerHTML = "Correct!!!";
+                    resultBox.style.color = 'green'
+                    good++;
+                    scoreBox.innerHTML = `Score: ${Math.ceil( (good/total) * 100 )}% (${good}/${total})`
+                } else {
+                    resultBox.style.color = 'red'
+                    resultBox.innerHTML = `Wrong :( correct aswer was ${answer}`
+                    scoreBox.innerHTML = `Score: ${Math.ceil( (good/total) * 100 )}% (${good}/${total})`
+                }
+            
+                setup()
+            }
+
+            function setup() {
+                const colors = [randomColor(), randomColor(), randomColor()]
+                var i = 0
+            
+                const colorbox = document.querySelector('#colorbox') 
+                const randomCorrectColor = colors[Math.floor(Math.random()*colors.length)]
+            
+                colorbox.style.backgroundColor = randomCorrectColor
+            
+                document.querySelectorAll('button').forEach((button) => {
+                    const hash = colors[i];
+                    i++;
+                    button.innerHTML = hash;
+                    button.onclick = function() {
+                        answer(button.innerHTML)
+                    }
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                setup()
+            });
+        </script>
     </head>
     <body>
-        <h1>test GitHub Pages</h1>
+        <div id="colorbox"></div>
+        <div class="test">
+            <button data-number="first">
+                Count: 0
+            </button>
+            <button data-number="second">
+                Count: 0
+            </button>
+            <button data-number="third">
+                Count: 0
+            </button>
+        </div>
+        <div>
+            <h2>Score: </h1>
+            <p id="result"></p>
+        </div>
     </body>
 </html>
